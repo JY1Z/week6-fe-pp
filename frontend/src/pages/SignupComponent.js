@@ -1,41 +1,46 @@
 // src/components/SignupComponent.js
-import React, { useState } from "react";
+// import React, { useState } from "react";
+import useField from "../hooks/useField";
 import useSignup from "../hooks/useSignup";
 
 const SignupComponent = ({ setIsAuthenticated }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { signup, loading, error } = useSignup(setIsAuthenticated);
+  const emailField = useField("text");
+  const passwordField = useField("password");
+  const password2Field = useField("password"); 
+  const { signup } = useSignup(setIsAuthenticated);
 
-  const handleSignup = () => {
-    signup(email, password);
+  const handleSubmit = () => {
+    if (passwordField.value !== password2Field.value) {
+      alert("Passwords do not match!");
+      return;
+    }
+    signup(emailField.value, passwordField.value).then((user) => {
+      if (user) {
+        sessionStorage.setItem("user", JSON.stringify(user));
+        setIsAuthenticated(true);
+      }
+    });
   };
 
   return (
     <div>
       <h2>Signup</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
       <label>
         Email:
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input {...emailField} />
       </label>
       <br />
       <label>
         Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <input {...passwordField} />
       </label>
       <br />
-      <button onClick={handleSignup} disabled={loading}>
-        {loading ? "Signing up..." : "Sign Up"}
-      </button>
+      <label>
+        Confirm Password:
+        <input {...password2Field} />
+      </label>
+      <br />
+      <button onClick={handleSubmit}>Sign Up</button>
     </div>
   );
 };
