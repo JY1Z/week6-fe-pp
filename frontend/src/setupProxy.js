@@ -10,3 +10,9 @@ module.exports = function (app) {
     })
   );
 };
+
+
+//Discuss
+//This is useful in development to avoid issues related to CORS when the frontend and backend are running on different ports.
+//Frontend: http://localhost:3000
+//Backend: connected to db & listening on port 4000
